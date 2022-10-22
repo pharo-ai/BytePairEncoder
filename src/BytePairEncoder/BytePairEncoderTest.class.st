@@ -5,15 +5,22 @@ Class {
 }
 
 { #category : #tests }
-BytePairEncoderTest >> testBuildFrequencyTable [
+BytePairEncoderTest >> testComputePairs [
 
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	enc buildFrequencyTable.
-	self assert: (enc frequencyOf: '_') equals: 23. 
-	self assert: (enc frequencyOf: 'o') equals: 14. 
-	self assert: (enc frequencyOf: 'l') equals: 14. 
+	enc computePairs.
+	
+	self assert: (enc pairOccurrencesOf: 'ol') equals: 10. 
+	self assert: (enc pairOccurrencesOf: 'ld') equals: 10. 
+	self assert: (enc pairOccurrencesOf: 'ld') equals: 10. 
+	self assert: (enc pairOccurrencesOf: 'st') equals: 13. 
+	self assert: (enc pairOccurrencesOf: 'es') equals: 13. 
+	self assert: (enc pairOccurrencesOf: 'lo') equals: 4. 
+	self assert: (enc pairOccurrencesOf: 't_') equals: 13. 
+	
+	self assert: enc numberOfPairs equals: 15
 	
 ]
 
