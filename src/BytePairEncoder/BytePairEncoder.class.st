@@ -28,12 +28,18 @@ Class {
 	#category : #BytePairEncoder
 }
 
-{ #category : #build }
-BytePairEncoder >> buildFrequencyTable [
+{ #category : #vocabulary }
+BytePairEncoder >> addToVocabulary: aString [
 	
+	characterVocabulary add: aString
+	
+]
 
+{ #category : #vocabulary }
+BytePairEncoder >> buildVocabulary [
+	
 	"we do not add characters but string because in the merge phase we will have sequences of characters."
-	words do: [ :each | each do: [ :aChar | characterVocabulary add: aChar asString ]].
+	words do: [ :each | each do: [ :aChar | self addToVocabulary: aChar asString ]].
 	
 ]
 
@@ -54,12 +60,21 @@ BytePairEncoder >> initialize [
 
 	super initialize.
 	words := Bag new.
-	characterVocabulary := Bag new.
+	characterVocabulary := Set new.
 	pairs := Bag new.
 	
 ]
 
-{ #category : #compute }
+{ #category : #merging }
+BytePairEncoder >> mergeOneStep [
+
+	"We should probably keep the sorted version... for later."
+	self addToVocabulary: pairs sortedCounts first value.
+	
+	"Now should update all the corpus to reflect that we want to replace the most frequent pairs with a new vocabulary element."
+]
+
+{ #category : #accessing }
 BytePairEncoder >> numberOfPairs [
 	
 	^ pairs keys size
@@ -75,7 +90,7 @@ BytePairEncoder >> occurrencesOf: aString [
 	^ words occurrencesOf: aString 
 ]
 
-{ #category : #comput }
+{ #category : #compute }
 BytePairEncoder >> pairForAssociation: anAssociation [ 
 	
 	| word |
@@ -95,4 +110,10 @@ BytePairEncoder >> prepareWordsFromText: aText [
 	|  rawWords |
 	rawWords := (aText substrings: {Character space . Character cr. Character tab}).
 	words addAll: (rawWords collect: [ :each | each , '_' ])
+]
+
+{ #category : #vocabulary }
+BytePairEncoder >> vocabulary [
+
+	^ characterVocabulary
 ]
