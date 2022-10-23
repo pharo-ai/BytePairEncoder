@@ -88,6 +88,7 @@ BytePairEncoder >> buildVocabulary [
 { #category : #compute }
 BytePairEncoder >> computePairs [
 	
+	pairs := Bag new.
 	words associationsDo: [ :association | 
 		self pairForAssociation: association ] 
 ]
@@ -103,7 +104,6 @@ BytePairEncoder >> initialize [
 	super initialize.
 	words := Bag new.
 	vocabulary := Set new.
-	pairs := Bag new.
 	merges := OrderedCollection new.
 	
 ]
@@ -117,6 +117,7 @@ BytePairEncoder >> mergeOneStep [
 	self addToVocabulary: newVocabularyItem.
 	self addToMergesPair: pair mergedInto: newVocabularyItem.
 	self updateCorpusFrom: pair to: newVocabularyItem.
+	self computePairs.
 	
 ]
 

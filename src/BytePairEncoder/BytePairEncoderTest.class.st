@@ -102,6 +102,28 @@ BytePairEncoderTest >> testMergeOneStepIncreaseVocabularyAndMerges [
 ]
 
 { #category : #tests }
+BytePairEncoderTest >> testMergeOneStepRecomputePairs [
+
+	| enc finestFrequency |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text.
+	finestFrequency := enc frequencyOfWord: #('f' 'i' 'n' 'es' 't').
+	enc buildVocabulary.
+	enc computePairs.
+	
+	enc mergeOneStep.
+	
+	self assert: (enc pairOccurrencesOf: {'o' . 'l'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'l' . 'd'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'l' .'d'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'es' . 't'}) equals: 13. 
+	self assert: (enc pairOccurrencesOf: {'l' .'o'}) equals: 4. 
+	self assert: (enc pairOccurrencesOf: {'t' . '_'}) equals: 13. 
+	self assert: (enc pairOccurrencesOf: {'w' . 'es'}) equals: 4. 
+	self assert: (enc pairOccurrencesOf: {'n' . 'es'}) equals: 9. 
+]
+
+{ #category : #tests }
 BytePairEncoderTest >> testMergeOneStepUpdatesCorpus [
 
 	| enc finestFrequency |
@@ -129,6 +151,21 @@ BytePairEncoderTest >> testPrepareWordsFromText [
 	self assert: (enc occurrencesOf: #('f' 'i' 'n' 'e' 's' 't' '_') asOrderedCollection) equals: 9. 
 	self assert: (enc occurrencesOf: #('l' 'o' 'w' 'e' 's' 't' '_') asOrderedCollection) equals: 4. 
 
+]
+
+{ #category : #tests }
+BytePairEncoderTest >> testTwoMerges [
+
+	| enc |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text.
+	enc buildVocabulary.
+	enc computePairs.
+	enc mergeOneStep.
+	enc mergeOneStep.
+	
+	self assert: enc merges first equals: #('e' 's')->'es'. 
+	self assert: enc merges second equals: #('es' 't')->'est'. 
 ]
 
 { #category : #tests }
