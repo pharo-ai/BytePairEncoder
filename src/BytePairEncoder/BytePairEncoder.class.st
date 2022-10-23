@@ -59,7 +59,6 @@ Class {
 		'words',
 		'pairs',
 		'vocabulary',
-		'merge',
 		'merges'
 	],
 	#category : #BytePairEncoder
@@ -94,8 +93,8 @@ BytePairEncoder >> computePairs [
 ]
 
 { #category : #accessing }
-BytePairEncoder >> frequencyOf: aString [ 
-	^ vocabulary occurrencesOf: aString 
+BytePairEncoder >> frequencyOfWord: aString [ 
+	^ words occurrencesOf: aString 
 ]
 
 { #category : #initialization }
@@ -134,11 +133,6 @@ BytePairEncoder >> numberOfPairs [
 ]
 
 { #category : #accessing }
-BytePairEncoder >> numberOfTokens [
-	^ vocabulary keys size
-]
-
-{ #category : #accessing }
 BytePairEncoder >> occurrencesOf: aString [ 
 	^ words occurrencesOf: aString 
 ]
@@ -172,14 +166,32 @@ BytePairEncoder >> prepareWordsFromText: aText [
 							col ])
 ]
 
+{ #category : #vocabulary }
+BytePairEncoder >> uniqueWords [
+
+	^ words keys
+]
+
 { #category : #merging }
 BytePairEncoder >> updateCorpusFrom: pair to: newVocabularyItem [
 
-	self halt.
+	| bag |
+	bag := Bag new.
+	words keys copy do: 
+		[ :word |
+			bag add: (word copyReplaceAll: pair with: {newVocabularyItem}) withOccurrences: (words occurrencesOf: word)
+		].
+	words := bag
 ]
 
 { #category : #vocabulary }
 BytePairEncoder >> vocabulary [
 
 	^ vocabulary
+]
+
+{ #category : #vocabulary }
+BytePairEncoder >> vocabularySize [
+
+	^ vocabulary size
 ]

@@ -71,19 +71,16 @@ BytePairEncoderTest >> testComputePairsText2 [
 ]
 
 { #category : #tests }
-BytePairEncoderTest >> testMergeOneStep [
+BytePairEncoderTest >> testMergeOneStepAddMergeToMergeList [
 
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
 	enc buildVocabulary.
-	 
 	enc computePairs.
-	self assert: enc vocabulary size equals: 12.
+	self assert: enc merges isEmpty.
 	enc mergeOneStep.
-	self assert: (enc vocabulary includes: 't_').
-	self assert: enc vocabulary size equals: 13
-	
+	self assert: enc merges first equals: #('e' 's')->'es' 
 ]
 
 { #category : #tests }
@@ -107,15 +104,18 @@ BytePairEncoderTest >> testMergeOneStepIncreaseVocabularyAndMerges [
 { #category : #tests }
 BytePairEncoderTest >> testMergeOneStepUpdatesCorpus [
 
-	| enc mergeOldSize |
+	| enc finestFrequency |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
+	finestFrequency := enc frequencyOfWord: #('f' 'i' 'n' 'es' 't').
 	enc buildVocabulary.
 	enc computePairs.
 	
 	enc mergeOneStep.
 	"should have a better assert"
-	self assert: false
+	self assert: (enc uniqueWords includes: #('l' 'o' 'w' 'es' 't' '_') asOrderedCollection).
+	self assert: (enc uniqueWords includes: #('f' 'i' 'n' 'es' 't' '_') asOrderedCollection). 
+	self assert: (enc frequencyOfWord: #('f' 'i' 'n' 'es' 't' '_')) equals: finestFrequency.
 ]
 
 { #category : #tests }
