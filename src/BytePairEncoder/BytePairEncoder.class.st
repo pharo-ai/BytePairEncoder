@@ -58,10 +58,18 @@ Class {
 	#instVars : [
 		'words',
 		'pairs',
-		'vocabulary'
+		'vocabulary',
+		'merge',
+		'merges'
 	],
 	#category : #BytePairEncoder
 }
+
+{ #category : #merges }
+BytePairEncoder >> addToMergesPair: aCollection mergedInto: aString [ 
+
+	merges add: aCollection -> aString
+]
 
 { #category : #vocabulary }
 BytePairEncoder >> addToVocabulary: aString [
@@ -97,21 +105,26 @@ BytePairEncoder >> initialize [
 	words := Bag new.
 	vocabulary := Set new.
 	pairs := Bag new.
+	merges := OrderedCollection new.
 	
 ]
 
 { #category : #merging }
 BytePairEncoder >> mergeOneStep [
 	
-	| newVocabularyItem | 
-	
-	"We should probably keep the sorted version... for later."
-	newVocabularyItem := pairs sortedCounts first value.
+	| newVocabularyItem pair | 
+	pair := pairs sortedCounts first value.
+	newVocabularyItem := pair first, pair second. 
 	self addToVocabulary: newVocabularyItem.
+	self addToMergesPair: pair mergedInto: newVocabularyItem.
+	self updateCorpusFrom: pair to: newVocabularyItem.
 	
-	
-	"Now may be we should update all the corpus to reflect that we want to replace the most frequent pairs with a new vocabulary element. "
-	
+]
+
+{ #category : #accessing }
+BytePairEncoder >> merges [
+
+	^ merges
 ]
 
 { #category : #accessing }
@@ -157,6 +170,12 @@ BytePairEncoder >> prepareWordsFromText: aText [
 							each do: [ :aChar | col add: aChar asString ].
 							col add: '_'.
 							col ])
+]
+
+{ #category : #merging }
+BytePairEncoder >> updateCorpusFrom: pair to: newVocabularyItem [
+
+	self halt.
 ]
 
 { #category : #vocabulary }

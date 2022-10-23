@@ -87,6 +87,38 @@ BytePairEncoderTest >> testMergeOneStep [
 ]
 
 { #category : #tests }
+BytePairEncoderTest >> testMergeOneStepIncreaseVocabularyAndMerges [
+
+	| enc mergeOldSize |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text.
+	enc buildVocabulary.
+	enc computePairs.
+	
+	self assert: enc vocabulary size equals: 12.
+	mergeOldSize := enc merges size.
+	enc mergeOneStep.
+	self assert: (enc vocabulary includes: 'es').
+	self assert: enc merges size equals: mergeOldSize + 1.
+	self assert: enc vocabulary size equals: 13
+	
+]
+
+{ #category : #tests }
+BytePairEncoderTest >> testMergeOneStepUpdatesCorpus [
+
+	| enc mergeOldSize |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text.
+	enc buildVocabulary.
+	enc computePairs.
+	
+	enc mergeOneStep.
+	"should have a better assert"
+	self assert: false
+]
+
+{ #category : #tests }
 BytePairEncoderTest >> testPrepareWordsFromText [
 
 	| enc |
