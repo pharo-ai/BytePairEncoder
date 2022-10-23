@@ -77,14 +77,6 @@ BytePairEncoder >> addToVocabulary: aString [
 	
 ]
 
-{ #category : #vocabulary }
-BytePairEncoder >> buildVocabulary [
-	
-	"we do not add characters but string because in the merge phase we will have sequences of characters."
-	words do: [ :each | each do: [ :aChar | self addToVocabulary: aChar asString ]].
-	
-]
-
 { #category : #compute }
 BytePairEncoder >> computePairs [
 	
@@ -93,9 +85,29 @@ BytePairEncoder >> computePairs [
 		self pairForAssociation: association ] 
 ]
 
+{ #category : #vocabulary }
+BytePairEncoder >> computeVocabulary [
+	
+	"we do not add characters but string because in the merge phase we will have sequences of characters."
+	words do: [ :each | each do: [ :aChar | self addToVocabulary: aChar asString ]].
+	
+]
+
 { #category : #accessing }
 BytePairEncoder >> frequencyOfWord: aString [ 
 	^ words occurrencesOf: aString 
+]
+
+{ #category : #api }
+BytePairEncoder >> fromText: aString [
+	"Prepare all the information for a text.
+	If you want to add multiple text elements use prepareWordsFromText:..."
+	
+	self prepareWordsFromText: aString.
+	self computeVocabulary.
+	self computePairs.
+	
+
 ]
 
 { #category : #initialization }

@@ -10,7 +10,7 @@ BytePairEncoderTest >> testBuildVocabularyProducesCorrectVocabulary [
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	enc buildVocabulary.
+	enc computeVocabulary.
 	self 
 		assertCollection: enc vocabulary asSet
 		hasSameElements: { '_' . 'd' . 'e' . 'i' . 'l' . 'f' . 'n' . 'o' . 'r' . 's' . 't' . 'w'} asSet
@@ -24,7 +24,7 @@ BytePairEncoderTest >> testBuildVocabularyProducesCorrectVocabularyText2 [
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text2.
-	enc buildVocabulary.
+	enc computeVocabulary.
 	self assertCollection: enc vocabulary asSet hasSameElements: { '_' . 'd' . 'e' . 'i' . 'l' . 'n' . 'o' . 'r' . 's' . 't' . 'w'} asSet
 
 ]
@@ -76,7 +76,7 @@ BytePairEncoderTest >> testMergeOneStepAddMergeToMergeList [
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	enc buildVocabulary.
+	enc computeVocabulary.
 	enc computePairs.
 	self assert: enc merges isEmpty.
 	enc mergeOneStep.
@@ -89,7 +89,7 @@ BytePairEncoderTest >> testMergeOneStepIncreaseVocabularyAndMerges [
 	| enc mergeOldSize |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	enc buildVocabulary.
+	enc computeVocabulary.
 	enc computePairs.
 	
 	self assert: enc vocabulary size equals: 12.
@@ -108,7 +108,7 @@ BytePairEncoderTest >> testMergeOneStepRecomputePairs [
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
 	finestFrequency := enc frequencyOfWord: #('f' 'i' 'n' 'es' 't').
-	enc buildVocabulary.
+	enc computeVocabulary.
 	enc computePairs.
 	
 	enc mergeOneStep.
@@ -130,7 +130,7 @@ BytePairEncoderTest >> testMergeOneStepUpdatesCorpus [
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
 	finestFrequency := enc frequencyOfWord: #('f' 'i' 'n' 'es' 't').
-	enc buildVocabulary.
+	enc computeVocabulary.
 	enc computePairs.
 	
 	enc mergeOneStep.
@@ -159,7 +159,7 @@ BytePairEncoderTest >> testTwoMerges [
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	enc buildVocabulary.
+	enc computeVocabulary.
 	enc computePairs.
 	enc mergeOneStep.
 	enc mergeOneStep.
