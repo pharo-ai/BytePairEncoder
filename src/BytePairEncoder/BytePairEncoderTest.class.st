@@ -5,6 +5,31 @@ Class {
 }
 
 { #category : #tests }
+BytePairEncoderTest >> testBuildVocabularyProducesCorrectVocabulary [
+
+	| enc |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text.
+	enc buildVocabulary.
+	self 
+		assertCollection: enc vocabulary asSet
+		hasSameElements: { '_' . 'd' . 'e' . 'i' . 'l' . 'f' . 'n' . 'o' . 'r' . 's' . 't' . 'w'} asSet
+
+
+]
+
+{ #category : #'tests - text2' }
+BytePairEncoderTest >> testBuildVocabularyProducesCorrectVocabularyText2 [
+
+	| enc |
+	enc := BytePairEncoder new. 
+	enc prepareWordsFromText: self text2.
+	enc buildVocabulary.
+	self assertCollection: enc vocabulary asSet hasSameElements: { '_' . 'd' . 'e' . 'i' . 'l' . 'n' . 'o' . 'r' . 's' . 't' . 'w'} asSet
+
+]
+
+{ #category : #tests }
 BytePairEncoderTest >> testComputePairs [
 
 	| enc |
@@ -12,13 +37,13 @@ BytePairEncoderTest >> testComputePairs [
 	enc prepareWordsFromText: self text.
 	enc computePairs.
 	
-	self assert: (enc pairOccurrencesOf: 'ol') equals: 10. 
-	self assert: (enc pairOccurrencesOf: 'ld') equals: 10. 
-	self assert: (enc pairOccurrencesOf: 'ld') equals: 10. 
-	self assert: (enc pairOccurrencesOf: 'st') equals: 13. 
-	self assert: (enc pairOccurrencesOf: 'es') equals: 13. 
-	self assert: (enc pairOccurrencesOf: 'lo') equals: 4. 
-	self assert: (enc pairOccurrencesOf: 't_') equals: 13. 
+	self assert: (enc pairOccurrencesOf: {'o' . 'l'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'l' . 'd'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'l' .'d'}) equals: 10. 
+	self assert: (enc pairOccurrencesOf: {'s' .'t'}) equals: 13. 
+	self assert: (enc pairOccurrencesOf: {'e' . 's'}) equals: 13. 
+	self assert: (enc pairOccurrencesOf: {'l' .'o'}) equals: 4. 
+	self assert: (enc pairOccurrencesOf: {'t' . '_'}) equals: 13. 
 	
 	self assert: enc numberOfPairs equals: 15
 	
@@ -32,13 +57,13 @@ BytePairEncoderTest >> testComputePairsText2 [
 	enc prepareWordsFromText: self text2.
 	enc computePairs.
 	
-	self assert: (enc pairOccurrencesOf: 'es') equals: 9. 
-	self assert: (enc pairOccurrencesOf: 'id') equals: 3. 
-	self assert: (enc pairOccurrencesOf: 'ow') equals: 7. 
-	self assert: (enc pairOccurrencesOf: 'st') equals: 9. 
-	self assert: (enc pairOccurrencesOf: 'we') equals: 8. 
-	self assert: (enc pairOccurrencesOf: 'wi') equals: 3. 
-	self assert: (enc pairOccurrencesOf: 't_') equals: 9. 
+	self assert: (enc pairOccurrencesOf: {'e' .'s'}) equals: 9. 
+	self assert: (enc pairOccurrencesOf: {'i'. 'd'}) equals: 3. 
+	self assert: (enc pairOccurrencesOf: {'o' .'w'}) equals: 7. 
+	self assert: (enc pairOccurrencesOf: {'s'. 't'}) equals: 9. 
+	self assert: (enc pairOccurrencesOf: {'w'. 'e'}) equals: 8. 
+	self assert: (enc pairOccurrencesOf: {'w'. 'i'}) equals: 3. 
+	self assert: (enc pairOccurrencesOf: {'t'.'_'}) equals: 9. 
 	
 	 "#('lo' 't_' 'er' 'r_' 'st' 'wi' 'es' 'ne' 'ow' 'we' 'w_' 'id' 'de' 'ew')"
 	self assert: enc numberOfPairs equals: 14
@@ -67,20 +92,10 @@ BytePairEncoderTest >> testPrepareWordsFromText [
 	| enc |
 	enc := BytePairEncoder new. 
 	enc prepareWordsFromText: self text.
-	self assert: (enc occurrencesOf: 'old_') equals: 7. 
-	self assert: (enc occurrencesOf: 'older_') equals: 3. 
-	self assert: (enc occurrencesOf: 'finest_') equals: 9. 
-	self assert: (enc occurrencesOf: 'lowest_') equals: 4. 
-]
-
-{ #category : #'tests - text2' }
-BytePairEncoderTest >> testPrepareWordsFromText2 [
-
-	| enc |
-	enc := BytePairEncoder new. 
-	enc prepareWordsFromText: self text2.
-	enc buildVocabulary.
-	self assertCollection: enc vocabulary asSet hasSameElements: { '_' . 'd' . 'e' . 'i' . 'l' . 'n' . 'o' . 'r' . 's' . 't' . 'w'} asSet
+	self assert: (enc occurrencesOf: #('o' 'l' 'd' '_') asOrderedCollection) equals: 7. 
+	self assert: (enc occurrencesOf: #('o' 'l' 'd' 'e' 'r' '_') asOrderedCollection) equals: 3. 
+	self assert: (enc occurrencesOf: #('f' 'i' 'n' 'e' 's' 't' '_') asOrderedCollection) equals: 9. 
+	self assert: (enc occurrencesOf: #('l' 'o' 'w' 'e' 's' 't' '_') asOrderedCollection) equals: 4. 
 
 ]
 
