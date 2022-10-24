@@ -77,6 +77,14 @@ BytePairEncoder class >> example [
 	^ enc inspect
 ]
 
+{ #category : #examples }
+BytePairEncoder class >> example2 [
+	| enc |
+	enc := self new fromText: ('BytePairEncoder' asPackage selectors asOrderedCollection joinUsing: ' ').
+	100 timesRepeat: [ enc mergeOneStep  ].
+	^ enc inspect
+]
+
 { #category : #merges }
 BytePairEncoder >> addToMergesPair: aCollection mergedInto: aString [ 
 
