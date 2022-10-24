@@ -51,6 +51,11 @@ Read [https://guillaume-be.github.io/2021-09-16/byte_pair_encoding](https://guil
 - pairs: is a bag containing the adjacent pairs found in the corpus and their frequencies. It holds OrderedCollection and not strings to be able to add merged tokens (`e~s` e followed by s should be replaced by a new characted `es`).
 
 
+
+
+
+
+
 "
 Class {
 	#name : #BytePairEncoder,
@@ -63,6 +68,14 @@ Class {
 	],
 	#category : #BytePairEncoder
 }
+
+{ #category : #examples }
+BytePairEncoder class >> example [
+	| enc |
+	enc := self new fromText: ('BytePairEncoder' asPackage selectors asOrderedCollection joinUsing: ' ').
+	100 timesRepeat: [ enc mergeOneStep  ].
+	^ enc inspect
+]
 
 { #category : #merges }
 BytePairEncoder >> addToMergesPair: aCollection mergedInto: aString [ 
